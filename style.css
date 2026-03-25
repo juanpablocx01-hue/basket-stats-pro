@@ -1,4 +1,4 @@
-/* --- CONFIGURACIÓN BASE --- */
+/* --- CONFIGURACIÓN GLOBAL TABLET --- */
 * {
     -webkit-user-select: none;
     user-select: none;
@@ -6,77 +6,55 @@
     box-sizing: border-box;
 }
 
+body { 
+    font-family: 'Segoe UI', sans-serif; 
+    padding: 5px; 
+    margin: 0; 
+    background-color: #f4f4f4; 
+    font-size: 13px;
+}
+
 .oculto { display: none !important; }
 
-body { 
-    font-family: 'Segoe UI', Tahoma, sans-serif; 
-    padding: 10px; 
-    margin: 0; 
-    background-color: #f0f2f5; 
-}
+/* --- NAV Y TITULOS --- */
+.btn { padding: 8px 12px; cursor: pointer; border: none; color: white; border-radius: 4px; font-weight: bold; }
+.acierto { background-color: #28a745; }
+.fallo { background-color: #dc3545; }
 
-/* --- LAYOUT PRINCIPAL --- */
-.layout-u { 
-    display: flex; 
-    gap: 10px; 
-    justify-content: center; 
-    align-items: flex-start;
-    margin-top: 10px;
-}
+/* --- LAYOUT PRO --- */
+.layout-u { display: flex; gap: 8px; justify-content: center; align-items: flex-start; width: 100%; }
+.columna-roster { flex: 0 0 155px; }
+.columna-centro { flex: 1; max-width: 420px; display: flex; flex-direction: column; align-items: center; }
 
-.columna-roster { flex: 0 0 160px; z-index: 5; }
-.columna-centro { flex: 1; max-width: 450px; display: flex; flex-direction: column; align-items: center; }
-
-/* --- CANCHA (RECONSTRUIDA) --- */
+/* --- CANCHA --- */
 .cancha-basquet { 
-    width: 100%; 
-    max-width: 400px; 
-    aspect-ratio: 50 / 47; 
-    background-color: #e2c096; 
-    border: 2px solid #333; 
-    position: relative;
-    cursor: crosshair;
-    /* Dibujo de la cancha restaurado */
+    width: 100%; max-width: 380px; aspect-ratio: 50 / 47; 
+    background-color: #e2c096; border: 2px solid #333; position: relative;
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 470'%3E%3Crect x='170' y='280' width='160' height='190' fill='%23d3a774' stroke='%23333' stroke-width='3'/%3E%3Ccircle cx='250' cy='280' r='60' fill='none' stroke='%23333' stroke-width='3'/%3E%3Cpath d='M 45 470 L 45 290 A 215 215 0 0 1 455 290 L 455 470' fill='none' stroke='%23333' stroke-width='3'/%3E%3Ccircle cx='250' cy='425' r='12' fill='none' stroke='%23f00' stroke-width='3'/%3E%3C/svg%3E");
     background-size: cover;
 }
 
-.marcador-tiro { 
-    position: absolute; 
-    width: 12px; height: 12px; 
-    background: red; border: 2px solid white; 
-    border-radius: 50%; transform: translate(-50%, -50%); 
-    z-index: 20;
-}
+.marcador-tiro { position: absolute; width: 10px; height: 10px; background: red; border: 1px solid white; border-radius: 50%; transform: translate(-50%, -50%); z-index: 10; }
 
-/* --- BOTONES JUGADORES --- */
-.btn-jugador { 
-    width: 100%; min-height: 42px; 
-    margin-bottom: 5px; font-weight: bold; 
-    background: white; border: 1px solid #999; 
-    border-radius: 6px; font-size: 0.85em;
-    cursor: pointer;
-}
-
-.btn-jugador.activo { 
-    background: #007bff; color: white; border-color: #004085; 
-    box-shadow: 0 0 10px rgba(0,123,255,0.5); 
-}
-
-.btn-jugador.listo-cambio { background: #ffc107; border-color: #d39e00; }
-
-.zona-cancha, .zona-banca { 
-    background: rgba(255,255,255,0.7); 
-    padding: 5px; border-radius: 8px; margin-bottom: 10px; 
-    border: 1px dashed #ccc;
-}
+/* --- ROSTERS COMPACTOS --- */
+.btn-jugador { width: 100%; min-height: 38px; margin-bottom: 3px; font-size: 0.8em; font-weight: bold; border-radius: 4px; border: 1px solid #999; background: white; }
+.btn-jugador.activo { background: #007bff; color: white; box-shadow: 0 0 8px rgba(0,123,255,0.5); }
+.btn-jugador.listo-cambio { background: #ffc107; }
+.zona-cancha, .zona-banca { background: #fff; padding: 4px; border-radius: 6px; margin-bottom: 5px; border: 1px dashed #ccc; }
+.titulo-zona { font-size: 0.7em; font-weight: bold; text-align: center; margin: 2px 0; color: #666; }
 
 /* --- MARCADOR --- */
-.reloj-digital { background: #111; color: #0f0; font-family: monospace; font-size: 2.2em; padding: 5px 15px; border-radius: 8px; }
-.caja-score { background: #222; color: #ff9800; font-size: 2.2em; padding: 5px 15px; border-radius: 8px; min-width: 60px; text-align: center; }
+.reloj-digital { background: #111; color: #0f0; font-family: monospace; font-size: 2em; padding: 2px 10px; border-radius: 5px; }
+.caja-score { background: #222; color: #ff9800; font-size: 2em; padding: 2px 10px; border-radius: 5px; min-width: 50px; text-align: center; }
 
-/* --- MENÚS --- */
-.menu-flotante { 
-    position: absolute; background: white; border: 2px solid #333; 
-    padding: 10px; border-radius: 8px; z-index: 100; width: 160px;
-}
+/* --- TABLAS Y DASHBOARD --- */
+#tabla-estadisticas-contenedor { overflow-x: auto; font-size: 0.8em; }
+#tabla-estadisticas { width: 100%; border-collapse: collapse; min-width: 1000px; }
+#tabla-estadisticas th { background: #333; color: white; padding: 8px; }
+#tabla-estadisticas td { padding: 6px; border-bottom: 1px solid #ddd; text-align: center; }
+
+.tarjeta-ratio { background: white; padding: 10px; border-radius: 8px; border: 1px solid #ddd; text-align: center; flex: 1; min-width: 120px; }
+.tarjeta-valor { font-size: 1.5em; font-weight: bold; }
+
+/* --- MENUS FLOTANTES --- */
+.menu-flotante { position: absolute; background: white; border: 2px solid #333; border-radius: 8px; padding: 8px; z-index: 100; width: 150px; }
