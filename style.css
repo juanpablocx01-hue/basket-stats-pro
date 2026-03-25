@@ -1,111 +1,84 @@
-/* --- CONFIGURACIÓN GLOBAL ANTI-ERRORES --- */
+/* --- AJUSTES DE ESPACIO EXTREMOS --- */
 * {
     -webkit-user-select: none;
     user-select: none;
     -webkit-tap-highlight-color: transparent;
-    box-sizing: border-box; /* Crucial para que el padding no rompa el ancho */
+    box-sizing: border-box;
 }
 
 body { 
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-    padding: 10px; /* Reducimos padding para ganar espacio */
+    font-family: 'Segoe UI', Arial, sans-serif; 
+    padding: 5px; /* Mínimo espacio en los bordes */
     margin: 0; 
     background-color: #f4f4f4;
-    width: 100vw;
-    overflow-x: hidden; /* Evita que la pantalla baile hacia los lados */
+    font-size: 13px; /* Fuente base más pequeña */
 }
 
-/* --- LAYOUT TIPO DASHBOARD (TODO EN UNA VISTA) --- */
+/* --- LAYOUT DASHBOARD --- */
 .layout-u { 
     display: flex; 
-    gap: 10px; 
-    align-items: flex-start; 
+    gap: 8px; 
     justify-content: center; 
     width: 100%;
 }
 
-/* Columna de Jugadores más estrecha */
-.columna-roster { 
-    flex: 0 0 180px; /* Bajamos de 280px a 180px */
-}
+.columna-roster { flex: 0 0 160px; } /* Rosters más delgados */
 
-/* Columna Central (Cancha y Marcador) */
 .columna-centro { 
     flex: 1; 
     display: flex; 
     flex-direction: column; 
     align-items: center; 
-    max-width: 450px; /* Cancha un poco más pequeña para que quepa todo */
+    max-width: 420px; 
 }
 
-/* Ajuste de la Cancha para que nunca se salga */
+/* --- CANCHA Y MARCADOR MINI --- */
 .cancha-basquet { 
     width: 100%; 
-    max-width: 400px; /* Reducimos el máximo */
+    max-width: 360px; /* Reducimos la cancha para que suban los botones */
     aspect-ratio: 50 / 47; 
     background-color: #e2c096; 
     border: 2px solid #333; 
-    position: relative; 
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 470'%3E%3Crect x='170' y='280' width='160' height='190' fill='%23d3a774' stroke='%23333' stroke-width='3'/%3E%3Ccircle cx='250' cy='280' r='60' fill='none' stroke='%23333' stroke-width='3'/%3E%3Cpath d='M 45 470 L 45 290 A 215 215 0 0 1 455 290 L 455 470' fill='none' stroke='%23333' stroke-width='3'/%3E%3Ccircle cx='250' cy='425' r='12' fill='none' stroke='%23f00' stroke-width='3'/%3E%3C/svg%3E"); 
-    background-size: cover; 
+    position: relative;
 }
 
-/* --- BOTONES DE JUGADORES COMPACTOS --- */
+.marcador-contenedor { gap: 5px; margin-bottom: 5px; }
+.reloj-digital { font-size: 2.2em; padding: 2px 10px; }
+.caja-score { font-size: 2.2em; padding: 2px 10px; min-width: 45px; }
+
+/* --- BOTONES DE JUGADORES (OPTIMIZADOS) --- */
 .btn-jugador { 
     width: 100%; 
-    min-height: 45px; /* Altura optimizada */
-    padding: 5px; 
-    font-size: 0.85rem; 
-    margin-bottom: 4px;
+    min-height: 38px; /* Altura mínima para que quepan todos sin scroll */
+    padding: 2px; 
+    font-size: 0.8rem; 
+    margin-bottom: 3px;
     font-weight: bold;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 6px;
-    background: white;
+    border-radius: 4px;
 }
 
 .zona-cancha, .zona-banca { 
-    min-height: 50px; 
-    padding: 5px; 
-    border-radius: 6px; 
-    margin-bottom: 8px; 
-}
-
-/* --- MARCADOR COMPACTO --- */
-.reloj-digital { font-size: 2em; padding: 5px 10px; }
-.caja-score { font-size: 2em; padding: 5px 10px; min-width: 50px; }
-.marcador-contenedor { gap: 8px; margin-bottom: 10px; }
-
-/* --- MENÚ FLOTANTE (ASISTENCIAS, FALTAS, ETC) --- */
-/* Lo hacemos más pequeño para que no tape la cancha */
-.menu-flotante { 
-    width: 150px; 
-    padding: 10px; 
-    border-radius: 10px;
-}
-.botones-flotantes button { 
     min-height: 40px; 
-    font-size: 1rem; 
+    padding: 3px; 
+    margin-bottom: 5px; 
 }
 
-/* --- ADAPTACIÓN PARA PANTALLAS PEQUEÑAS (TABLETS) --- */
-@media (max-width: 800px) {
-    .layout-u {
-        flex-direction: row; /* Mantenemos el Roster al lado de la Cancha */
-        flex-wrap: nowrap;
-    }
-    .columna-roster { flex: 0 0 140px; } /* Más estrecho aún en tablets pequeñas */
-    .btn-jugador { font-size: 0.75rem; min-height: 40px; }
-    .cancha-basquet { max-width: 350px; }
+/* --- NUEVO: BOTONES DE AJUSTE DE RELOJ --- */
+.controles-reloj-rapidos {
+    display: flex;
+    gap: 4px;
+    margin-top: 5px;
 }
+.btn-ajuste-tiempo {
+    background: #444;
+    color: white;
+    border: 1px solid #666;
+    padding: 5px 8px;
+    font-size: 0.8em;
+    border-radius: 4px;
+    font-weight: bold;
+}
+.btn-ajuste-tiempo:active { background: #000; }
 
-/* --- ESTILO DE BOTONES DE ACCIÓN --- */
-.btn { padding: 8px 15px; font-size: 14px; }
-.acierto { background-color: #28a745; }
-.fallo { background-color: #dc3545; }
-
-/* Otros estilos necesarios */
-.marcador-tiro { position: absolute; width: 12px; height: 12px; background: red; border: 2px solid #fff; border-radius: 50%; transform: translate(-50%, -50%); }
-.btn-jugador.activo { background: #007bff; color: #fff; box-shadow: 0 0 10px rgba(0,123,255,0.5); }
-.grid-jugadores { display: flex; flex-direction: column; gap: 4px; }
+/* --- BOTONES DE ACCIÓN (MÁS BAJITOS) --- */
+.btn { padding: 6px 10px; font-size: 13px; font-weight: bold; }
