@@ -9,33 +9,33 @@
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            padding: 10px;
+            padding: 5px; /* Reducido al mínimo */
             max-width: 1400px; 
             margin: 0 auto;
-            font-size: 14px; /* Reduce fuente base */
+            font-size: 14px; 
         }
 
         /* Prevención de zoom por doble toque en elementos interactivos */
-        .btn, .btn-jugador, .btn-accion, .cancha-basquet {
+        .btn, .btn-jugador, .btn-accion, .cancha-basquet, .btn-play-mini {
             touch-action: manipulation; 
         }
 
         .cancha-basquet {
             width: 100%;
-            max-width: 510px; /* Reducido ~15% desde 600px */
+            max-width: 480px; /* Tamaño ideal para dejar espacio a los botones abajo */
             aspect-ratio: 50 / 47; 
             background-color: #e2c096; 
             border: 2px solid #333;
             position: relative;
             cursor: crosshair;
-            margin-bottom: 20px;
+            margin: 0 auto 6px auto; /* Centrado y con margen pequeño */
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 470'%3E%3C!-- Pintura --%3E%3Crect x='170' y='280' width='160' height='190' fill='%23d3a774' stroke='%23333' stroke-width='3'/%3E%3C!-- Circulo Libre --%3E%3Ccircle cx='250' cy='280' r='60' fill='none' stroke='%23333' stroke-width='3'/%3E%3C!-- Linea 3 Puntos --%3E%3Cpath d='M 45 470 L 45 290 A 215 215 0 0 1 455 290 L 455 470' fill='none' stroke='%23333' stroke-width='3'/%3E%3C!-- Area Restringida --%3E%3Cpath d='M 210 425 A 40 40 0 0 1 290 425' fill='none' stroke='%23333' stroke-width='3'/%3E%3C!-- Tablero --%3E%3Cline x1='215' y1='440' x2='285' y2='440' stroke='%23333' stroke-width='4'/%3E%3C!-- Aro --%3E%3Ccircle cx='250' cy='425' r='12' fill='none' stroke='%23f00' stroke-width='3'/%3E%3C!-- Angulos 45 --%3E%3Cline x1='250' y1='425' x2='95' y2='270' stroke='%23555' stroke-width='2' stroke-dasharray='6,4'/%3E%3Cline x1='250' y1='425' x2='405' y2='270' stroke='%23555' stroke-width='2' stroke-dasharray='6,4'/%3E%3C/svg%3E");
             background-size: cover;
             background-position: center;
         }
 
         .marcador-tiro { position: absolute; width: 12px; height: 12px; background-color: red; border: 2px solid white; border-radius: 50%; transform: translate(-50%, -50%); box-shadow: 0 0 5px rgba(0,0,0,0.5); }
-        .btn { padding: 10px 20px; font-size: 14px; cursor: pointer; border: none; color: white; border-radius: 5px; margin-right: 10px;}
+        .btn { padding: 8px 16px; font-size: 14px; cursor: pointer; border: none; color: white; border-radius: 4px; margin-right: 5px;}
         .acierto { background-color: #28a745; }
         .fallo { background-color: #dc3545; }
         .oculto { display: none !important; }
@@ -47,66 +47,60 @@
         .fallo-pequeno { background-color: transparent; border: none; color: #dc3545; font-weight: bold; font-size: 26px; line-height: 1; }
         .fallo-pequeno::before { content: "×"; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); }
 
-        /* NUEVA ESTRUCTURA FLEXIBLE (25% - 50% - 25%) PARA MANTENER LADOS EN TABLETA */
-        .layout-u { 
+        /* ========================================================= */
+        /* ESTRUCTURA HIPER OPTIMIZADA (CENTRO DE COMANDO)           */
+        /* ========================================================= */
+        .layout-comando { 
             display: flex; 
-            gap: 8px; /* Menos espacio entre columnas */
-            align-items: flex-start; 
+            gap: 6px; 
+            align-items: stretch; 
             justify-content: space-between; 
-            margin-top: 10px; 
-            flex-wrap: nowrap; /* Evita que se bajen los elementos en tabletas */
+            margin-top: 5px; 
+            flex-wrap: nowrap; 
         }
         
-        .columna-roster { 
+        .columna-lateral { 
             flex: 1 1 25%; 
-            max-width: 240px; /* Reducido */
-            min-width: 120px; /* Reducido */
+            max-width: 220px; 
+            min-width: 100px; 
+            display: flex;
+            flex-direction: column;
         }
         
-        .columna-centro { 
+        .columna-central { 
             flex: 2 1 50%; 
             display: flex; 
             flex-direction: column; 
-            align-items: center; 
-            max-width: 510px; /* Reducido */
-            min-width: 250px; /* Reducido */
+            align-items: stretch; 
+            max-width: 520px; 
+            min-width: 260px; 
         }
 
-        /* AJUSTES PARA MÓVILES PEQUEÑOS (Smartphones) */
-        @media (max-width: 650px) {
-            .layout-u { flex-wrap: wrap; justify-content: center; flex-direction: column; align-items: center;}
-            .columna-centro { order: -1; width: 100%; min-width: 100%; margin-bottom: 30px; }
-            .columna-roster { flex: 1 1 100%; max-width: 100%; width: 100%; }
-            .marcador-contenedor { flex-wrap: wrap; justify-content: center; }
-            .caja-score { font-size: 2.2em; }
-        }
-
-        .zona-cancha, .zona-banca { min-height: 50px; padding: 8px; border-radius: 4px; margin-bottom: 8px; }
-        .zona-cancha { background-color: #eafaf1; border: 1px dashed #28a745; }
-        .zona-banca { background-color: #f8f9fa; border: 1px dashed #ccc; }
-        .titulo-zona { font-size: 0.8em; color: #666; margin: 0 0 6px 0; text-transform: uppercase; font-weight: bold; text-align: center;}
-        .titulo-equipo { margin-top: 0; font-size: 1em; color: #333; text-align: center; border-bottom: 2px solid #ccc; padding-bottom: 4px; background: #ddd; padding: 6px; border-radius: 5px;}
-
-        .grid-jugadores { display: flex; flex-wrap: wrap; gap: 6px; }
+        /* --- Estilos Roster Lateral --- */
+        .titulo-equipo-mini { margin: 0 0 4px 0; font-size: 0.9em; color: white; background: #333; text-align: center; padding: 4px; border-radius: 4px; text-transform: uppercase;}
+        .zona-cancha-mini { background-color: #eafaf1; border: 1px solid #28a745; padding: 4px; border-radius: 4px; margin-bottom: 6px; }
+        .zona-banca-mini { background-color: #f8f9fa; border: 1px solid #ccc; padding: 4px; border-radius: 4px; }
+        .titulo-zona-mini { font-size: 0.7em; color: #555; margin-bottom: 4px; text-align: center; font-weight: bold; text-transform: uppercase; }
         
-        /* Botones de jugadores ajustados para columnas estrechas en tableta */
+        .grid-jugadores { display: flex; flex-wrap: wrap; gap: 4px; }
         .btn-jugador { 
             flex: 1 1 100%; 
-            padding: 8px 4px; 
-            min-height: 40px; /* Reducido ~15% */
-            font-size: 0.8em; /* Fuente reducida */
+            padding: 6px 2px; 
+            min-height: 38px; /* Táctil eficiente */
+            font-size: 0.75em; 
             cursor: pointer; 
             background-color: white; 
             border: 1px solid #aaa; 
             border-radius: 4px; 
             transition: all 0.2s; 
-            white-space: normal; /* Permite que el texto baje a 2 líneas si es largo */
+            white-space: normal; 
             word-wrap: break-word;
-            line-height: 1.2;
+            line-height: 1.1;
             display: flex;
             align-items: center;
             justify-content: center;
             text-align: center;
+            font-weight: 500;
         }
         .btn-jugador:hover { background-color: #e9ecef; }
         .btn-jugador.activo { background-color: #007bff; color: white; border-color: #004085; font-weight: bold; box-shadow: 0 0 8px rgba(0, 123, 255, 0.5); transform: scale(1.02); z-index: 10; position: relative; }
@@ -114,13 +108,55 @@
 
         @keyframes palpitar { 0% { transform: scale(1); } 100% { transform: scale(1.05); } }
 
-        .marcador-contenedor { display: flex; align-items: center; gap: 10px; justify-content: center; width: 100%; }
-        .caja-score { background: #222; color: #ff9800; font-family: 'Courier New', Courier, monospace; font-size: 2.5em; padding: 8px 12px; border-radius: 8px; border: 4px solid #444; min-width: 50px; text-align: center; font-weight: bold; }
-        .nombre-score { text-align: center; font-size: 0.8em; color: #333; font-weight: bold; text-transform: uppercase; margin-bottom: 4px; max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-        .reloj-digital { background: #111; color: #0f0; font-family: 'Courier New', Courier, monospace; font-size: 2.2em; text-align: center; padding: 8px 12px; border-radius: 8px; border: 4px solid #333; display: inline-block; letter-spacing: 2px; }
+        /* --- Estilos Marcador y Reloj Central --- */
+        .marcador-compacto {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #222;
+            padding: 6px 10px;
+            border-radius: 6px;
+            margin-bottom: 6px;
+            border: 2px solid #444;
+        }
+        .caja-equipo { display: flex; flex-direction: column; align-items: center; width: 60px; }
+        .nombre-score-mini { font-size: 0.75em; color: #aaa; font-weight: bold; margin-bottom: 2px; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;}
+        .score-numero-mini { font-family: 'Courier New', monospace; font-size: 2.2em; color: #ff9800; font-weight: bold; line-height: 1; }
+        
+        .caja-reloj-mini { display: flex; flex-direction: column; align-items: center; flex: 1; }
+        .select-periodo-mini { font-size: 0.75em; padding: 2px 4px; background: #111; color: white; border: 1px solid #555; border-radius: 3px; outline: none; }
+        .reloj-digital-mini { font-family: 'Courier New', monospace; font-size: 2em; color: #0f0; line-height: 1; margin: 4px 0; letter-spacing: 1px;}
         .reloj-pausado { color: #dc3545; }
+        .btn-play-mini { background: #28a745; color: white; border: none; padding: 6px 16px; font-weight: bold; border-radius: 4px; font-size: 0.85em; cursor: pointer; text-transform: uppercase;}
 
-        .menu-flotante { position: absolute; background: white; border: 2px solid #333; border-radius: 8px; padding: 12px; box-shadow: 0 8px 16px rgba(0,0,0,0.4); z-index: 100; width: 170px; text-align: center; }
+        /* --- Acciones Inmediatas (Grid 4x2) --- */
+        .grid-acciones-rapidas {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 4px;
+            width: 100%;
+            background: #f8f9fa;
+            padding: 6px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+        }
+        .grid-acciones-rapidas .btn-accion {
+            margin: 0;
+            padding: 4px 2px;
+            font-size: 0.8em;
+            min-height: 42px; /* Amplio para dedos */
+            white-space: normal;
+            line-height: 1.1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            font-weight: bold;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        /* --- Menú Flotante Tiro --- */
+        .menu-flotante { position: absolute; background: white; border: 2px solid #333; border-radius: 8px; padding: 10px; box-shadow: 0 8px 16px rgba(0,0,0,0.4); z-index: 100; width: 170px; text-align: center; }
         .menu-flotante select { width: 100%; padding: 6px; margin-bottom: 10px; font-size: 0.9em; }
         .botones-flotantes { display: flex; gap: 6px; }
         .botones-flotantes button { flex: 1; padding: 10px 0; font-size: 1.1em; font-weight: bold; border-radius: 5px; margin: 0;}
@@ -129,8 +165,16 @@
         .btn-sin-asist { background: #ffcccc; border-color: #ff9999; font-weight: bold; color: #a00; margin-top: 8px; }
         .btn-sin-asist:hover { background: #ffb3b3; }
 
-        .btn-accion { min-height: 38px; padding: 8px 10px; font-size: 0.85em; } 
+        /* AJUSTES PARA MÓVILES MUY PEQUEÑOS (Smartphones vertical) */
+        @media (max-width: 600px) {
+            .layout-comando { flex-wrap: wrap; justify-content: center; flex-direction: column; align-items: center;}
+            .columna-central { order: -1; width: 100%; min-width: 100%; margin-bottom: 15px; }
+            .columna-lateral { flex: 1 1 100%; max-width: 100%; width: 100%; }
+        }
 
+        /* ========================================================= */
+        /* RESTO DE ESTILOS INTACTOS (Dashboard, Historial, Admin)   */
+        /* ========================================================= */
         #tabla-estadisticas-contenedor { overflow-x: auto; margin-top: 20px; }
         #tabla-estadisticas { width: 100%; border-collapse: collapse; text-align: center; background-color: white; min-width: 1200px; border: 1px solid #ddd;}
         #tabla-estadisticas thead tr { background-color: #333; color: white; }
@@ -145,8 +189,6 @@
         .tarjeta-titulo { font-size: 1.4em; font-weight: bold; color: #111; margin-bottom: 5px; }
         .tarjeta-sub { font-size: 0.85em; color: #777; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 0.5px; }
         .tarjeta-valor { font-size: 2.5em; font-weight: bold; color: #000; }
-        .valor-verde { color: #28a745; }
-        .valor-rojo { color: #dc3545; }
 
         .zona-stat-box {
             position: absolute;
@@ -169,14 +211,16 @@
     </style>
 </head>
 <body>
-    <h1>Estadísticas de Básquetbol</h1>
-    <p>Estado: <span id="estado-conexion">Conectando...</span></p>
+    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #ddd; padding-bottom: 5px; margin-bottom: 10px;">
+        <h1 style="margin: 0; font-size: 1.2em;">Estadísticas de Básquetbol</h1>
+        <p style="margin: 0; font-size: 0.85em;">Estado: <span id="estado-conexion">Conectando...</span></p>
+    </div>
     
-    <div style="margin-bottom: 20px; border-bottom: 2px solid #ddd; padding-bottom: 15px; display: flex; gap: 10px; flex-wrap: wrap;">
-        <button id="nav-partido" class="btn" style="background-color: #333; margin: 0;">🏀 Registro de Partido</button>
+    <div style="margin-bottom: 10px; display: flex; gap: 8px; flex-wrap: wrap;">
+        <button id="nav-partido" class="btn" style="background-color: #333; margin: 0;">🏀 Partido</button>
         <button id="nav-historial" class="btn" style="background-color: #888; margin: 0;">📜 Historial</button>
-        <button id="nav-temporada" class="btn" style="background-color: #888; margin: 0;">🏆 Modo Temporada</button>
-        <button id="nav-admin" class="btn" style="background-color: #888; margin: 0;">⚙️ Panel Admin</button>
+        <button id="nav-temporada" class="btn" style="background-color: #888; margin: 0;">🏆 Temporada</button>
+        <button id="nav-admin" class="btn" style="background-color: #888; margin: 0;">⚙️ Admin</button>
     </div>
 
     <div id="seccion-partido">
@@ -186,85 +230,103 @@
             <div style="display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 15px;">
                 <div style="flex: 1; min-width: 200px;">
                     <label>Equipo Local:</label><br>
-                    <select id="select-local" style="width: 100%; padding: 12px;"><option value="">Cargando...</option></select>
+                    <select id="select-local" style="width: 100%; padding: 10px;"><option value="">Cargando...</option></select>
                 </div>
                 <div style="flex: 1; min-width: 200px;">
                     <label>Equipo Visitante:</label><br>
-                    <select id="select-visitante" style="width: 100%; padding: 12px;"><option value="">Cargando...</option></select>
+                    <select id="select-visitante" style="width: 100%; padding: 10px;"><option value="">Cargando...</option></select>
                 </div>
             </div>
 
-            <div style="display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 15px; background: #f9f9f9; padding: 15px; border-radius: 8px; border: 1px solid #ddd;">
+            <div style="display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 15px; background: #f9f9f9; padding: 10px; border-radius: 8px; border: 1px solid #ddd;">
                 <div style="flex: 1; min-width: 150px;">
                     <label>📅 Fecha del Juego:</label><br>
-                    <input type="date" id="config-fecha" style="width: 100%; padding: 10px; box-sizing: border-box;">
+                    <input type="date" id="config-fecha" style="width: 100%; padding: 8px; box-sizing: border-box;">
                 </div>
                 <div style="flex: 1; min-width: 150px;">
                     <label>🏆 Torneo / Tipo:</label><br>
-                    <input type="text" id="config-torneo" placeholder="Ej. Amistoso, Final..." style="width: 100%; padding: 10px; box-sizing: border-box;">
+                    <input type="text" id="config-torneo" placeholder="Ej. Amistoso, Final..." style="width: 100%; padding: 8px; box-sizing: border-box;">
                 </div>
                 <div style="flex: 1; min-width: 150px;">
                     <label>📍 Cancha:</label><br>
-                    <input type="text" id="config-cancha" placeholder="Ej. Gimnasio Local" style="width: 100%; padding: 10px; box-sizing: border-box;">
+                    <input type="text" id="config-cancha" placeholder="Ej. Gimnasio Local" style="width: 100%; padding: 8px; box-sizing: border-box;">
                 </div>
                 <div style="flex: 1; min-width: 150px;">
-                    <label>⏱️ Minutos / Cuarto:</label><br>
-                    <select id="config-minutos" style="width: 100%; padding: 10px;">
+                    <label>⏱️ Min / Cuarto:</label><br>
+                    <select id="config-minutos" style="width: 100%; padding: 8px;">
                         <option value="12">12 Min (NBA)</option>
                         <option value="10">10 Min (FIBA)</option>
                     </select>
                 </div>
             </div>
 
-            <button id="btn-iniciar-partido" class="btn" style="background-color: #007bff; width: 100%; padding: 15px; font-size: 1.2em; font-weight: bold;">Iniciar Partido</button>
+            <button id="btn-iniciar-partido" class="btn" style="background-color: #007bff; width: 100%; padding: 12px; font-size: 1.1em; font-weight: bold;">Iniciar Partido</button>
         </div>
 
+        <!-- ========================================== -->
+        <!-- NUEVO CENTRO DE COMANDO ULTRA OPTIMIZADO   -->
+        <!-- ========================================== -->
         <div id="panel-captura" class="oculto">
-            <div style="display: flex; justify-content: space-between; align-items: center; background: #e9ecef; padding: 15px; border-radius: 8px; margin-bottom: 10px; border-left: 5px solid #333; flex-wrap: wrap; gap: 15px;">
-                <div>
-                    <h2 style="margin: 0 0 10px 0;">2. Centro de Comando</h2>
-                    <div style="margin-top: 10px;">
-                        <label style="font-weight: bold; font-size: 1.1em;">⏱️ Periodo:</label>
-                        <select id="select-periodo" style="padding: 10px; margin-left: 5px; font-size: 1em;">
-                            <option value="Q1">1er Cuarto</option>
-                            <option value="Q2">2do Cuarto</option>
-                            <option value="Q3">3er Cuarto</option>
-                            <option value="Q4">4to Cuarto</option>
-                            <option value="OT">Tiempo Extra</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="marcador-contenedor">
-                    <div><div class="nombre-score" id="nombre-score-local">LOCAL</div><div id="score-local" class="caja-score">0</div></div>
-                    <div style="text-align: center;">
-                        <div id="pantalla-reloj" class="reloj-digital reloj-pausado">12:00</div>
-                        <div style="margin-top: 10px; display: flex; justify-content: center;"><button id="btn-toggle-reloj" class="btn" style="background-color: #28a745; padding: 12px 30px; margin: 0; font-weight: bold; width: 140px; font-size: 1.1em;">▶ Play</button></div>
-                    </div>
-                    <div><div class="nombre-score" id="nombre-score-visitante">VISIT</div><div id="score-visitante" class="caja-score">0</div></div>
-                </div>
-
-                <div><button id="btn-ver-estadisticas" class="btn" style="background-color: #17a2b8; height: 100%; padding: 15px; font-size: 1.1em;">📊 Ver Box Score Master</button></div>
-            </div>
             
-            <div style="background: #fff3cd; color: #856404; padding: 15px; border-radius: 5px; text-align: center; font-size: 1.1em; margin-bottom: 15px;">
-                💡 <strong>Para registrar:</strong> Toca un jugador en cancha (se pone azul) ➔ Toca la cancha ➔ Confirma en el menú flotante.
+            <!-- BARRA SUPERIOR ULTRA DELGADA -->
+            <div style="display: flex; justify-content: space-between; align-items: center; background: #333; color: white; padding: 4px 10px; border-radius: 4px; margin-bottom: 6px;">
+                <span style="font-weight: bold; font-size: 0.9em; letter-spacing: 0.5px;">🏀 CENTRO DE COMANDO</span>
+                <button id="btn-ver-estadisticas" class="btn" style="background-color: #17a2b8; padding: 4px 10px; font-size: 0.8em; margin: 0;">📊 Ver Box Score Master</button>
             </div>
 
-            <div class="layout-u">
-                <div class="columna-roster">
-                    <h3 id="titulo-equipo-local" class="titulo-equipo">Local</h3>
-                    <div class="zona-cancha"><p class="titulo-zona">🟢 En Cancha</p><div id="grid-local-cancha" class="grid-jugadores"></div></div>
-                    <div class="zona-banca"><p class="titulo-zona">🪑 Banca (Toca para cambio)</p><div id="grid-local-banca" class="grid-jugadores"></div></div>
+            <div class="layout-comando">
+                <!-- IZQUIERDA: ROSTER LOCAL -->
+                <div class="columna-lateral">
+                    <h3 id="titulo-equipo-local" class="titulo-equipo-mini">Local</h3>
+                    <div class="zona-cancha-mini">
+                        <div class="titulo-zona-mini">🟢 En Cancha</div>
+                        <div id="grid-local-cancha" class="grid-jugadores"></div>
+                    </div>
+                    <div class="zona-banca-mini">
+                        <div class="titulo-zona-mini">🪑 Banca</div>
+                        <div id="grid-local-banca" class="grid-jugadores"></div>
+                    </div>
                 </div>
 
-                <div class="columna-centro">
+                <!-- CENTRO: MARCADOR + CANCHA + ACCIONES -->
+                <div class="columna-central">
+                    
+                    <!-- Marcador y Reloj Super Compacto -->
+                    <div class="marcador-compacto">
+                        <div class="caja-equipo">
+                            <div class="nombre-score-mini" id="nombre-score-local">LOCAL</div>
+                            <div id="score-local" class="score-numero-mini">0</div>
+                        </div>
+                        <div class="caja-reloj-mini">
+                            <select id="select-periodo" class="select-periodo-mini">
+                                <option value="Q1">1er Q</option>
+                                <option value="Q2">2do Q</option>
+                                <option value="Q3">3er Q</option>
+                                <option value="Q4">4to Q</option>
+                                <option value="OT">Extra</option>
+                            </select>
+                            <div id="pantalla-reloj" class="reloj-digital-mini reloj-pausado">12:00</div>
+                            <button id="btn-toggle-reloj" class="btn-play-mini">▶ Play</button>
+                        </div>
+                        <div class="caja-equipo">
+                            <div class="nombre-score-mini" id="nombre-score-visitante">VISIT</div>
+                            <div id="score-visitante" class="score-numero-mini">0</div>
+                        </div>
+                    </div>
+
+                    <!-- Mensaje Ayuda -->
+                    <div style="background: #fff3cd; color: #856404; padding: 3px; border-radius: 4px; text-align: center; font-size: 0.75em; margin-bottom: 6px;">
+                        💡 <strong>Registrar:</strong> Toca Jugador ➔ Toca Cancha ➔ Confirma Tiro.
+                    </div>
+
+                    <!-- Cancha Central -->
                     <div id="cancha-wrapper" style="position: relative; width: 100%;">
-                        <div id="cancha" class="cancha-basquet" style="margin: 0 auto;"></div>
+                        <div id="cancha" class="cancha-basquet"></div>
                         
+                        <!-- Menús Flotantes (mantienen su lógica) -->
                         <div id="acciones-tiro" class="menu-flotante oculto">
-                            <span style="font-size: 0.9em; color: #666; display: block; margin-bottom: 5px;">Valor de Tiro:</span>
-                            <select id="select-puntos">
+                            <span style="font-size: 0.85em; color: #666; display: block; margin-bottom: 5px;">Valor de Tiro:</span>
+                            <select id="select-puntos" style="padding: 4px; margin-bottom: 8px;">
                                 <option value="2">2 Pts (Zona)</option>
                                 <option value="3">3 Pts (Triple)</option>
                             </select>
@@ -275,35 +337,41 @@
                         </div>
 
                         <div id="menu-asistencia" class="menu-flotante oculto">
-                            <h4 style="margin-top: 0; color: #333; font-size: 1.1em; margin-bottom: 10px;">¿Asistencia de?</h4>
+                            <h4 style="margin-top: 0; color: #333; font-size: 1em; margin-bottom: 8px;">¿Asistencia?</h4>
                             <div id="lista-asistencias"></div>
-                            <button class="btn-asist btn-sin-asist" id="btn-sin-asistencia">🚫 Sin Asistencia</button>
+                            <button class="btn-asist btn-sin-asist" id="btn-sin-asistencia">🚫 Sin Asist.</button>
                         </div>
                     </div>
 
-                    <div id="acciones-rapidas" style="margin-top: 15px; padding: 15px; background: #f8f9fa; border: 1px solid #ddd; border-radius: 5px; width: 100%; text-align: center;">
-                        <p style="margin: 0 0 10px 0; font-weight: bold; font-size: 1em; color:#555;">⚡ Acciones Inmediatas (Requieren jugador):</p>
-                        <div style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: center;">
-                            <button class="btn-accion btn" data-tipo="TL" data-res="Acierto" style="background-color: #28a745; margin:0; font-size:0.95em;">✅ TL Pts</button>
-                            <button class="btn-accion btn" data-tipo="TL" data-res="Fallo" style="background-color: #dc3545; margin:0; font-size:0.95em;">❌ TL Falla</button>
-                            <div style="width:100%; height:1px; background:#ddd; margin: 10px 0;"></div>
-                            <button class="btn-accion btn" data-tipo="Rebote" data-res="Ofensivo" style="background-color: #f39c12; margin:0; font-size:0.95em;">Reb. Of</button>
-                            <button class="btn-accion btn" data-tipo="Rebote" data-res="Defensivo" style="background-color: #e67e22; margin:0; font-size:0.95em;">Reb. Def</button>
-                            <button class="btn-accion btn" data-tipo="Asistencia" data-res="Exitosa" style="background-color: #3498db; margin:0; font-size:0.95em;">Asistencia</button>
-                            <button class="btn-accion btn" data-tipo="Robo" data-res="Balon" style="background-color: #2ecc71; margin:0; font-size:0.95em;">Robo</button>
-                            <button class="btn-accion btn" data-tipo="Perdida" data-res="Balon" style="background-color: #e74c3c; margin:0; font-size:0.95em;">Pérdida</button>
-                            <button class="btn-accion btn" data-tipo="Falta" data-res="Personal" style="background-color: #9b59b6; margin:0; font-size:0.95em;">Falta</button>
-                        </div>
+                    <!-- Acciones Rápidas (Grid 4x2) -->
+                    <div class="grid-acciones-rapidas">
+                        <button class="btn-accion" data-tipo="TL" data-res="Acierto" style="background-color: #28a745; color: white; border: none;">✅ TL Pts</button>
+                        <button class="btn-accion" data-tipo="TL" data-res="Fallo" style="background-color: #dc3545; color: white; border: none;">❌ TL Fall</button>
+                        <button class="btn-accion" data-tipo="Asistencia" data-res="Exitosa" style="background-color: #3498db; color: white; border: none;">Asist</button>
+                        <button class="btn-accion" data-tipo="Falta" data-res="Personal" style="background-color: #9b59b6; color: white; border: none;">Falta</button>
+                        
+                        <button class="btn-accion" data-tipo="Rebote" data-res="Ofensivo" style="background-color: #f39c12; color: white; border: none;">Reb Of</button>
+                        <button class="btn-accion" data-tipo="Rebote" data-res="Defensivo" style="background-color: #e67e22; color: white; border: none;">Reb Def</button>
+                        <button class="btn-accion" data-tipo="Robo" data-res="Balon" style="background-color: #2ecc71; color: white; border: none;">Robo</button>
+                        <button class="btn-accion" data-tipo="Perdida" data-res="Balon" style="background-color: #e74c3c; color: white; border: none;">Pérdida</button>
                     </div>
                 </div>
 
-                <div class="columna-roster">
-                    <h3 id="titulo-equipo-visitante" class="titulo-equipo">Visitante</h3>
-                    <div class="zona-cancha"><p class="titulo-zona">🟢 En Cancha</p><div id="grid-visitante-cancha" class="grid-jugadores"></div></div>
-                    <div class="zona-banca"><p class="titulo-zona">🪑 Banca (Toca para cambio)</p><div id="grid-visitante-banca" class="grid-jugadores"></div></div>
+                <!-- DERECHA: ROSTER VISITANTE -->
+                <div class="columna-lateral">
+                    <h3 id="titulo-equipo-visitante" class="titulo-equipo-mini">Visitante</h3>
+                    <div class="zona-cancha-mini">
+                        <div class="titulo-zona-mini">🟢 En Cancha</div>
+                        <div id="grid-visitante-cancha" class="grid-jugadores"></div>
+                    </div>
+                    <div class="zona-banca-mini">
+                        <div class="titulo-zona-mini">🪑 Banca</div>
+                        <div id="grid-visitante-banca" class="grid-jugadores"></div>
+                    </div>
                 </div>
             </div>
         </div>
+        <!-- ========================================== -->
 
         <div id="panel-dashboard" class="oculto">
             <h2>3. Box Score Avanzado Master <span id="lbl-partido-id" style="font-size: 0.6em; color: #888;">(ID: --)</span></h2>
@@ -312,7 +380,7 @@
                 <div style="display: flex; gap: 10px; flex-wrap: wrap;">
                     <div style="background: #f1f1f1; padding: 10px; border-radius: 5px; border: 1px solid #ddd;">
                         <label for="filtro-periodo-dash" style="font-weight: bold;">⏱️ Periodo:</label>
-                        <select id="filtro-periodo-dash" style="padding: 10px; margin-left: 10px;">
+                        <select id="filtro-periodo-dash" style="padding: 8px; margin-left: 10px;">
                             <option value="todos">Todo el partido</option>
                             <option value="Q1">1er Cuarto</option>
                             <option value="Q2">2do Cuarto</option>
@@ -323,11 +391,11 @@
                     </div>
                     <div style="background: #f1f1f1; padding: 10px; border-radius: 5px; border: 1px solid #ddd;">
                         <label for="filtro-equipo" style="font-weight: bold;">🛡️ Equipo:</label>
-                        <select id="filtro-equipo" style="padding: 10px; margin-left: 10px;"><option value="todos">Ambos Equipos</option></select>
+                        <select id="filtro-equipo" style="padding: 8px; margin-left: 10px;"><option value="todos">Ambos Equipos</option></select>
                     </div>
                     <div style="background: #f1f1f1; padding: 10px; border-radius: 5px; border: 1px solid #ddd;">
                         <label for="filtro-jugador" style="font-weight: bold;">🔍 Jugador:</label>
-                        <select id="filtro-jugador" style="padding: 10px; margin-left: 10px;"><option value="todos">Todos los jugadores</option></select>
+                        <select id="filtro-jugador" style="padding: 8px; margin-left: 10px;"><option value="todos">Todos los jugadores</option></select>
                     </div>
                 </div>
             </div>
@@ -393,7 +461,7 @@
         <h2>🏆 Estadísticas Globales (Modo Temporada)</h2>
         <div style="background: #f1f1f1; padding: 15px; border-radius: 5px; border: 1px solid #ddd; margin-bottom: 20px;">
             <label for="filtro-jugador-temporada" style="font-weight: bold; font-size: 1.1em;">🔍 Selecciona Jugador a Analizar:</label>
-            <select id="filtro-jugador-temporada" style="padding: 12px; margin-left: 10px; font-size: 1em;">
+            <select id="filtro-jugador-temporada" style="padding: 10px; margin-left: 10px; font-size: 1em;">
                 <option value="">Cargando jugadores...</option>
             </select>
         </div>
@@ -426,17 +494,17 @@
             <div style="background: #f9f9f9; padding: 20px; border-radius: 8px; border: 1px solid #ddd; flex: 1; min-width: 300px;">
                 <h3 style="margin-top: 0; color: #333;">🏀 Crear Nuevo Equipo</h3>
                 <label>Nombre del Equipo:</label>
-                <input type="text" id="admin-nombre-equipo" placeholder="Ej. Golden State Warriors" style="width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;">
+                <input type="text" id="admin-nombre-equipo" placeholder="Ej. Golden State Warriors" style="width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;">
                 <button id="btn-team" class="btn" style="background-color: #28a745; width: 100%;">Guardar Equipo</button>
             </div>
             <div style="background: #f9f9f9; padding: 20px; border-radius: 8px; border: 1px solid #ddd; flex: 1; min-width: 300px;">
                 <h3 style="margin-top: 0; color: #333;">👤 Registrar Jugador</h3>
                 <label>Selecciona su Equipo:</label>
-                <select id="admin-select-equipo" style="width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;"><option value="">Cargando equipos...</option></select>
+                <select id="admin-select-equipo" style="width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;"><option value="">Cargando equipos...</option></select>
                 <label>Nombre Completo:</label>
-                <input type="text" id="admin-nombre-jugador" placeholder="Ej. Stephen Curry" style="width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;">
+                <input type="text" id="admin-nombre-jugador" placeholder="Ej. Stephen Curry" style="width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;">
                 <label>Número de Jersey:</label>
-                <input type="number" id="admin-numero-jugador" placeholder="Ej. 30" style="width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;">
+                <input type="number" id="admin-numero-jugador" placeholder="Ej. 30" style="width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;">
                 <button id="btn-player" class="btn" style="background-color: #007bff; width: 100%;">Registrar Jugador</button>
             </div>
         </div>
@@ -1015,7 +1083,7 @@
             const btnAnotador = document.querySelector(`.btn-jugador[data-id="${idAnotador}"]`);
             if(!btnAnotador) { finalizarFlujoCaptura(`Tiro guardado ✔️`); return; }
 
-            const contenedorEquipo = btnAnotador.closest('.zona-cancha');
+            const contenedorEquipo = btnAnotador.closest('.columna-lateral');
             const companeros = contenedorEquipo.querySelectorAll(`.btn-jugador:not([data-id="${idAnotador}"])`);
             
             companeros.forEach(comp => {
