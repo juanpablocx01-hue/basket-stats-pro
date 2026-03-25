@@ -1,176 +1,111 @@
-/* --- CONFIGURACIÓN GLOBAL Y MODO TABLETA --- */
+/* --- CONFIGURACIÓN GLOBAL ANTI-ERRORES --- */
 * {
-    /* Evita que aparezca el menú de Copiar/Pegar y la selección de texto */
     -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
     user-select: none;
-    /* Quita el destello azul/gris al tocar botones en Android/iOS */
     -webkit-tap-highlight-color: transparent;
+    box-sizing: border-box; /* Crucial para que el padding no rompa el ancho */
 }
 
 body { 
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-    padding: 20px; 
-    max-width: 1200px; 
-    margin: 0 auto; 
+    padding: 10px; /* Reducimos padding para ganar espacio */
+    margin: 0; 
     background-color: #f4f4f4;
+    width: 100vw;
+    overflow-x: hidden; /* Evita que la pantalla baile hacia los lados */
 }
 
-/* --- CANCHA --- */
+/* --- LAYOUT TIPO DASHBOARD (TODO EN UNA VISTA) --- */
+.layout-u { 
+    display: flex; 
+    gap: 10px; 
+    align-items: flex-start; 
+    justify-content: center; 
+    width: 100%;
+}
+
+/* Columna de Jugadores más estrecha */
+.columna-roster { 
+    flex: 0 0 180px; /* Bajamos de 280px a 180px */
+}
+
+/* Columna Central (Cancha y Marcador) */
+.columna-centro { 
+    flex: 1; 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    max-width: 450px; /* Cancha un poco más pequeña para que quepa todo */
+}
+
+/* Ajuste de la Cancha para que nunca se salga */
 .cancha-basquet { 
     width: 100%; 
-    max-width: 500px; 
+    max-width: 400px; /* Reducimos el máximo */
     aspect-ratio: 50 / 47; 
     background-color: #e2c096; 
     border: 2px solid #333; 
     position: relative; 
-    cursor: crosshair; 
-    margin-bottom: 20px; 
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 470'%3E%3C!-- Pintura --%3E%3Crect x='170' y='280' width='160' height='190' fill='%23d3a774' stroke='%23333' stroke-width='3'/%3E%3C!-- Circulo Libre --%3E%3Ccircle cx='250' cy='280' r='60' fill='none' stroke='%23333' stroke-width='3'/%3E%3C!-- Linea 3 Puntos --%3E%3Cpath d='M 45 470 L 45 290 A 215 215 0 0 1 455 290 L 455 470' fill='none' stroke='%23333' stroke-width='3'/%3E%3C!-- Area Restringida --%3E%3Cpath d='M 210 425 A 40 40 0 0 1 290 425' fill='none' stroke='%23333' stroke-width='3'/%3E%3C!-- Tablero --%3E%3Cline x1='215' y1='440' x2='285' y2='440' stroke='%23333' stroke-width='4'/%3E%3C!-- Aro --%3E%3Ccircle cx='250' cy='425' r='12' fill='none' stroke='%23f00' stroke-width='3'/%3E%3C!-- Angulos 45 --%3E%3Cline x1='250' y1='425' x2='95' y2='270' stroke='%23555' stroke-width='2' stroke-dasharray='6,4'/%3E%3Cline x1='250' y1='425' x2='405' y2='270' stroke='%23555' stroke-width='2' stroke-dasharray='6,4'/%3E%3C/svg%3E"); 
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 470'%3E%3Crect x='170' y='280' width='160' height='190' fill='%23d3a774' stroke='%23333' stroke-width='3'/%3E%3Ccircle cx='250' cy='280' r='60' fill='none' stroke='%23333' stroke-width='3'/%3E%3Cpath d='M 45 470 L 45 290 A 215 215 0 0 1 455 290 L 455 470' fill='none' stroke='%23333' stroke-width='3'/%3E%3Ccircle cx='250' cy='425' r='12' fill='none' stroke='%23f00' stroke-width='3'/%3E%3C/svg%3E"); 
     background-size: cover; 
-    background-position: center; 
 }
 
-.marcador-tiro { 
-    position: absolute; 
-    width: 14px; 
-    height: 14px; 
-    background-color: red; 
-    border: 2px solid white; 
-    border-radius: 50%; 
-    transform: translate(-50%, -50%); 
-    box-shadow: 0 0 5px rgba(0,0,0,0.5); 
-}
-
-/* --- BOTONES GENERALES --- */
-.btn { 
-    padding: 12px 20px; 
-    font-size: 16px; 
-    cursor: pointer; 
-    border: none; 
-    color: white; 
-    border-radius: 5px; 
-    margin-right: 10px;
-    font-weight: bold;
-}
-.acierto { background-color: #28a745; }
-.fallo { background-color: #dc3545; }
-.oculto { display: none !important; }
-
-/* --- SHOTCHART Y VISUALIZACIÓN --- */
-.cancha-pequena { max-width: 500px !important; width: 100% !important; height: auto !important; border: 1px solid #ccc !important; cursor: default; }
-#contenedor-shotchart, #contenedor-heatmap, #contenedor-zonas { overflow: hidden; position: relative; }
-.marcador-shotchart { position: absolute; width: 8px; height: 8px; border-radius: 50%; transform: translate(-50%, -50%); box-shadow: 0 0 2px rgba(0,0,0,0.3); }
-.acierto-pequeno { background-color: #28a745; border: 1px solid #fff; }
-.fallo-pequeno { background-color: transparent; border: none; color: #dc3545; font-weight: bold; font-size: 24px; line-height: 1; }
-.fallo-pequeno::before { content: "×"; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); }
-
-/* --- LAYOUT Y COLUMNAS --- */
-.layout-u { display: flex; gap: 20px; align-items: flex-start; justify-content: space-between; margin-top: 15px; }
-.columna-roster { flex: 0 0 280px; }
-.columna-centro { flex: 1; display: flex; flex-direction: column; align-items: center; max-width: 550px; }
-
-@media (max-width: 950px) { 
-    .layout-u { flex-direction: column; align-items: center; } 
-    .columna-roster { width: 100%; flex: auto; margin-bottom: 20px; } 
-}
-
-/* --- ROSTER Y JUGADORES (OPTIMIZADO PARA DEDO) --- */
-.zona-cancha, .zona-banca { min-height: 80px; padding: 10px; border-radius: 8px; margin-bottom: 15px; }
-.zona-cancha { background-color: #eafaf1; border: 2px dashed #28a745; }
-.zona-banca { background-color: #f8f9fa; border: 2px dashed #ccc; }
-.titulo-zona { font-size: 0.9em; color: #555; margin: 0 0 8px 0; text-transform: uppercase; font-weight: bold; text-align: center;}
-.titulo-equipo { margin-top: 0; font-size: 1.2em; color: #333; text-align: center; border-bottom: 2px solid #ccc; padding-bottom: 5px; background: #ddd; padding: 12px; border-radius: 8px; font-weight: bold;}
-
-.grid-jugadores { display: flex; flex-wrap: wrap; gap: 8px; }
+/* --- BOTONES DE JUGADORES COMPACTOS --- */
 .btn-jugador { 
-    flex: 1 1 100%; 
-    min-height: 55px; /* Altura ideal para touch */
-    padding: 10px; 
-    font-size: 1rem; 
-    cursor: pointer; 
-    background-color: white; 
-    border: 1px solid #aaa; 
-    border-radius: 6px; 
-    transition: all 0.2s; 
-    font-weight: 600;
+    width: 100%; 
+    min-height: 45px; /* Altura optimizada */
+    padding: 5px; 
+    font-size: 0.85rem; 
+    margin-bottom: 4px;
+    font-weight: bold;
     display: flex;
     align-items: center;
     justify-content: center;
-}
-.btn-jugador:hover { background-color: #f1f1f1; }
-.btn-jugador.activo { 
-    background-color: #007bff; 
-    color: white; 
-    border-color: #004085; 
-    font-weight: bold; 
-    box-shadow: 0 0 12px rgba(0, 123, 255, 0.6); 
-    transform: scale(1.03); 
-    z-index: 10; 
-}
-.btn-jugador.listo-cambio { 
-    background-color: #ffc107; 
-    color: black; 
-    border-color: #d39e00; 
-    font-weight: bold; 
-    animation: palpitar 1s infinite alternate; 
+    border-radius: 6px;
+    background: white;
 }
 
-@keyframes palpitar { 0% { transform: scale(1); } 100% { transform: scale(1.05); } }
-
-/* --- MARCADOR Y RELOJ --- */
-.marcador-contenedor { display: flex; align-items: center; gap: 15px; justify-content: center; margin-bottom: 15px;}
-.caja-score { background: #222; color: #ff9800; font-family: 'Courier New', Courier, monospace; font-size: 3em; padding: 5px 15px; border-radius: 8px; border: 4px solid #444; min-width: 70px; text-align: center; font-weight: bold; }
-.nombre-score { text-align: center; font-size: 0.9em; color: #333; font-weight: bold; text-transform: uppercase; margin-bottom: 5px; }
-.reloj-digital { background: #111; color: #0f0; font-family: 'Courier New', Courier, monospace; font-size: 3.2em; text-align: center; padding: 5px 20px; border-radius: 8px; border: 4px solid #333; display: inline-block; letter-spacing: 2px; }
-.reloj-pausado { color: #dc3545; }
-
-/* --- MENU FLOTANTE (REGISTRO RÁPIDO) --- */
-.menu-flotante { 
-    position: absolute; 
-    background: white; 
-    border: 3px solid #333; 
-    border-radius: 12px; 
-    padding: 15px; 
-    box-shadow: 0 10px 25px rgba(0,0,0,0.5); 
-    z-index: 100; 
-    width: 200px; 
-    text-align: center; 
-}
-.botones-flotantes { display: flex; flex-direction: column; gap: 10px; }
-.botones-flotantes button { 
-    width: 100%;
-    min-height: 50px; /* Botones grandes para confirmar tiro */
-    font-size: 1.3em; 
-    font-weight: bold; 
-    border-radius: 8px; 
-    margin: 0;
-}
-.btn-asist { 
-    min-height: 45px;
+.zona-cancha, .zona-banca { 
+    min-height: 50px; 
+    padding: 5px; 
+    border-radius: 6px; 
     margin-bottom: 8px; 
-    background: #f8f9fa; 
-    border: 2px solid #ddd; 
-    font-weight: bold;
 }
-.btn-sin-asist { background: #fee2e2; border-color: #fca5a5; color: #b91c1c; }
 
-/* --- TABLAS Y ESTADÍSTICAS --- */
-#tabla-estadisticas-contenedor { overflow-x: auto; margin-top: 20px; border-radius: 8px; border: 1px solid #ddd;}
-#tabla-estadisticas { width: 100%; border-collapse: collapse; text-align: center; background-color: white; min-width: 1200px; }
-#tabla-estadisticas thead tr { background-color: #333; color: white; }
-#tabla-estadisticas th, #tabla-estadisticas td { padding: 12px; border-bottom: 1px solid #ddd; border-right: 1px solid #f1f1f1;}
-.col-pts { font-weight: bold; font-size: 1.2em; background-color: #f8f9fa;}
+/* --- MARCADOR COMPACTO --- */
+.reloj-digital { font-size: 2em; padding: 5px 10px; }
+.caja-score { font-size: 2em; padding: 5px 10px; min-width: 50px; }
+.marcador-contenedor { gap: 8px; margin-bottom: 10px; }
 
-/* --- RATIOS Y ZONAS --- */
-.tarjetas-ratio-container { display: flex; gap: 15px; margin: 20px 0; flex-wrap: wrap; justify-content: center; }
-.tarjeta-ratio { flex: 1; min-width: 200px; background: #fff; border: 2px solid #eee; border-radius: 10px; padding: 20px; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-.tarjeta-valor { font-size: 2.8em; font-weight: bold; }
+/* --- MENÚ FLOTANTE (ASISTENCIAS, FALTAS, ETC) --- */
+/* Lo hacemos más pequeño para que no tape la cancha */
+.menu-flotante { 
+    width: 150px; 
+    padding: 10px; 
+    border-radius: 10px;
+}
+.botones-flotantes button { 
+    min-height: 40px; 
+    font-size: 1rem; 
+}
 
-.zona-stat-box { position: absolute; background: rgba(255, 255, 255, 0.95); border: 2px solid #333; border-radius: 6px; padding: 5px 10px; text-align: center; transform: translate(-50%, -50%); font-size: 0.9em; font-weight: bold; z-index: 10; pointer-events: none;}
+/* --- ADAPTACIÓN PARA PANTALLAS PEQUEÑAS (TABLETS) --- */
+@media (max-width: 800px) {
+    .layout-u {
+        flex-direction: row; /* Mantenemos el Roster al lado de la Cancha */
+        flex-wrap: nowrap;
+    }
+    .columna-roster { flex: 0 0 140px; } /* Más estrecho aún en tablets pequeñas */
+    .btn-jugador { font-size: 0.75rem; min-height: 40px; }
+    .cancha-basquet { max-width: 350px; }
+}
 
-/* --- PLAY-BY-PLAY --- */
-#play-by-play-container { background: #fff; border: 1px solid #ddd; border-radius: 8px; padding: 15px; }
-.pbp-item { padding: 10px; border-bottom: 1px solid #eee; display: flex; align-items: center; }
-.btn-borrar-evento { padding: 8px 12px; min-height: 35px; }
+/* --- ESTILO DE BOTONES DE ACCIÓN --- */
+.btn { padding: 8px 15px; font-size: 14px; }
+.acierto { background-color: #28a745; }
+.fallo { background-color: #dc3545; }
+
+/* Otros estilos necesarios */
+.marcador-tiro { position: absolute; width: 12px; height: 12px; background: red; border: 2px solid #fff; border-radius: 50%; transform: translate(-50%, -50%); }
+.btn-jugador.activo { background: #007bff; color: #fff; box-shadow: 0 0 10px rgba(0,123,255,0.5); }
+.grid-jugadores { display: flex; flex-direction: column; gap: 4px; }
