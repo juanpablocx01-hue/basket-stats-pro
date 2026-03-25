@@ -400,6 +400,8 @@ function crearBotonJugadorDOM(jugador, esCancha) {
             document.querySelectorAll('.btn-jugador').forEach(b => b.classList.remove('activo', 'listo-cambio'));
             btn.classList.add('activo');
             jugadorSeleccionadoEnCancha = jugador.id;
+            const barraActivo = document.getElementById('cmd-jugador-nombre');
+            if (barraActivo) barraActivo.textContent = 'Jugador activo: ' + jugador.nombre + ' (#' + jugador.numero + ')';
         }
     });
 
@@ -610,6 +612,8 @@ function finalizarFlujoCaptura(mensaje) {
     if(estado) { estado.textContent = mensaje; estado.style.color = "blue"; }
     document.querySelectorAll('.btn-jugador').forEach(b => b.classList.remove('activo'));
     jugadorSeleccionadoEnCancha = null;
+    const barraActivo = document.getElementById('cmd-jugador-nombre');
+    if(barraActivo) barraActivo.textContent = 'Toca un jugador para seleccionarlo';
     setTimeout(() => { if(estado){estado.textContent = "Conectado. Registro en Vivo."; estado.style.color = "green";} }, 1500);
 }
 
