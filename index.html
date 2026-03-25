@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Básquet Analytics</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/heatmap.js/2.0.0/heatmap.min.js"></script>
@@ -13,6 +13,15 @@
             max-width: 1400px; 
             margin: 0 auto;
             font-size: 10px; /* Reducido ~15% (de 12px a 10px) */
+            overscroll-behavior: none; /* Evita el efecto rebote y pull-to-refresh en tabletas */
+            -webkit-user-select: none; /* Evita selección de texto por toques accidentales */
+            user-select: none;
+        }
+
+        /* Permite seleccionar texto solo donde es necesario (inputs) */
+        input, select {
+            -webkit-user-select: auto;
+            user-select: auto;
         }
 
         /* Prevención de zoom por doble toque en elementos interactivos */
@@ -1572,6 +1581,41 @@
                 contenedor.appendChild(box);
             }
         }
+
+        // ==========================================
+        // SISTEMA DE BLOQUEO Y PREVENCIÓN DE ACCIDENTES
+        // ==========================================
+
+        // 1. Prevenir recargar la página o cerrarla por accidente
+        window.addEventListener('beforeunload', function (e) {
+            if (partidoActualId) {
+                const mensaje = '¿Estás seguro de que quieres salir? El partido está en curso y podrías interrumpir el registro.';
+                e.preventDefault();
+                e.returnValue = mensaje;
+                return mensaje;
+            }
+        });
+
+        // 2. Prevenir gesto de pellizco (Pinch-to-zoom) en Safari/iOS
+        document.addEventListener('touchmove', function(event) {
+            if (event.scale !== 1 && event.scale !== undefined) {
+                event.preventDefault();
+            }
+        }, { passive: false });
+
+        // 3. Prevenir doble toque accidental para zoom (Double-tap to zoom)
+        let ultimoToque = 0;
+        document.addEventListener('touchend', function(event) {
+            // Dejar que los botones e inputs funcionen con normalidad
+            const tagName = event.target.tagName.toLowerCase();
+            if (tagName === 'button' || tagName === 'input' || tagName === 'select') return;
+            
+            const ahora = (new Date()).getTime();
+            if (ahora - ultimoToque <= 300) {
+                event.preventDefault();
+            }
+            ultimoToque = ahora;
+        }, { passive: false });
 
         iniciarApp();
     </script>
