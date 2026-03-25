@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Básquet Analytics</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/heatmap.js/2.0.0/heatmap.min.js"></script>
+</head>
+<body style="max-width: 1200px !important; margin: 0 auto;">
+    <h1>Estadísticas de Básquetbol</h1>
+    <p>Estado: <span id="estado-conexion">Conectando...</span></p>
+    
+    <div style="margin-bottom: 20px; border-bottom: 2px solid #ddd; padding-bottom: 15px; display: flex; gap: 10px; flex-wrap: wrap;">
+        <button id="nav-partido" class="btn" style="background-color: #333; margin: 0;">🏀 Registro de Partido</button>
+        <button id="nav-historial" class="btn" style="background-color: #888; margin: 0;">📜 Historial</button>
+        <button id="nav-temporada" class="btn" style="background-color: #888; margin: 0;">🏆 Modo Temporada</button>
+        <button id="nav-admin" class="btn" style="background-color: #888; margin: 0;">⚙️ Panel Admin</button>
+    </div>
+
+    <div id="seccion-partido">
+        <div id="panel-configuracion">
+            <h2>1. Configurar Partido</h2>
+            <div style="display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 15px;">
+                <div style="flex: 1; min-width: 200px;"><label>Equipo Local:</label><br><select id="select-local" style="width: 100%; padding: 8px;"><option value="">Cargando...</option></select></div>
+                <div style="flex: 1; min-width: 200px;"><label>Equipo Visitante:</label><br><select id="select-visitante" style="width: 100%; padding: 8px;"><option value="">Cargando...</option></select></div>
+            </div>
+            <div style="display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 15px; background: #f9f9f9; padding: 15px; border-radius: 8px; border: 1px solid #ddd;">
+                <div style="flex: 1; min-width: 150px;"><label>📅 Fecha del Juego:</label><br><input type="date" id="config-fecha" style="width: 100%; padding: 8px; box-sizing: border-box;"></div>
+                <div style="flex: 1; min-width: 150px;"><label>🏆 Torneo / Tipo:</label><br><input type="text" id="config-torneo" placeholder="Ej. Amistoso, Final..." style="width: 100%; padding: 8px; box-sizing: border-box;"></div>
+                <div style="flex: 1; min-width: 150px;"><label>📍 Cancha:</label><br><input type="text" id="config-cancha" placeholder="Ej. Gimnasio Local" style="width: 100%; padding: 8px; box-sizing: border-box;"></div>
+                <div style="flex: 1; min-width: 150px;"><label>⏱️ Min / Cuarto:</label><br>
+                    <select id="config-minutos" style="width: 100%; padding: 8px;"><option value="12">12 Min (NBA)</option><option value="10">10 Min (FIBA)</option></select>
+                </div>
+            </div>
+            <button id="btn-iniciar-partido" class="btn" style="background-color: #007bff; width: 100%; padding: 15px; font-size: 1.1em; font-weight: bold;">Iniciar Partido</button>
+        </div>
+
+        <div id="panel-captura" class="oculto">
+            <div style="display: flex; justify-content: space-between; align-items: center; background: #e9ecef; padding: 15px; border-radius: 8px; margin-bottom: 10px; border-left: 5px solid #333; flex-wrap: wrap; gap: 15px;">
+                <div>
+                    <h2 style="margin: 0 0 10px 0;">2. Centro de Comando</h2>
+                    <div style="margin-top: 10px;">
+                        <label style="font-weight: bold;">⏱️ Periodo:</label>
+                        <select id="select-periodo" style="padding: 5px; margin-left: 5px;">
+                            <option value="Q1">1er Cuarto</option>
+                            <option value="Q2">2do Cuarto</option>
+                            <option value="Q3">3er Cuarto</option>
+                            <option value="Q4">4to Cuarto</option>
+                            <option value="OT">Tiempo Extra</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="marcador-contenedor">
+                    <div><div class="nombre-score" id="nombre-score-local">LOCAL</div><div id="score-local" class="caja-score">0</div></div>
+                    <div style="text-align: center;">
+                        <div id="pantalla-reloj" class="reloj-digital reloj-pausado">12:00</div>
+                        <div style="margin-top: 10px; display: flex; justify-content: center;"><button id="btn-toggle-reloj" class="btn" style="background-color: #28a745; padding: 8px 30px; margin: 0; font-weight: bold; width: 120px;">▶ Play</button></div>
+                    </div>
+                    <div><div class="nombre-score" id="nombre-score-visitante">VISIT</div><div id="score-visitante" class="caja-score">0</div></div>
+                </div>
+
+                <div><button id="btn-ver-estadisticas" class="btn" style="background-color: #17a2b8; height: 100%;">📊 Ver Box Score Master</button></div>
+            </div>
+            
+            <div style="background: #fff3cd; color: #856404; padding: 10px; border-radius: 5px; text-align: center; font-size: 0.9em; margin-bottom: 15px;">
+                💡 <strong>Para registrar:</strong> Toca un jugador en cancha ➔ Toca la cancha ➔ Confirma. (El +/- se calcula automáticamente).
+            </div>
+
+            <div class="layout-u">
+                <div class="columna-roster">
+                    <h3 id="titulo-equipo-local" class="titulo-equipo">Local</h3>
+                    <div class="zona-cancha"><p class="titulo-zona">🟢 En Cancha</p><div id="grid-local-cancha" class="grid-jugadores"></div></div>
+                    <div class="zona-banca"><p class="titulo-zona">🪑 Banca (Toca para cambio)</p><div id="grid-local-banca" class="grid-jugadores"></div></div>
+                </div>
+
+                <div class="columna-centro">
+                    <div id="cancha-wrapper" style="position: relative; width: 100%;">
+                        <div id="cancha" class="cancha-basquet" style="margin: 0 auto;"></div>
+                        
+                        <div id="acciones-tiro" class="menu-flotante oculto">
+                            <span style="font-size: 0.8em; color: #666; display: block; margin-bottom: 5px;">Valor de Tiro:</span>
+                            <select id="select-puntos">
+                                <option value="2">2 Pts (Zona)</option>
+                                <option value="3">3 Pts (Triple)</option>
+                            </select>
+                            <div class="botones-flotantes">
+                                <button id="btn-acierto" class="btn acierto">✅</button>
+                                <button id="btn-fallo" class="btn fallo">❌</button>
+                            </div>
+                        </div>
+
+                        <div id="menu-asistencia" class="menu-flotante oculto" style="width: 190px;">
+                            <h4 style="margin-top: 0; color: #333; font-size: 1em; margin-bottom: 10px;">¿Asistencia de?</h4>
+                            <div id="lista-asistencias"></div>
+                            <button class="btn-asist btn-sin-asist" id="btn-sin-asistencia">🚫 Sin Asistencia</button>
+                        </div>
+                    </div>
+
+                    <div id="acciones-rapidas" style="margin-top: 15px; padding: 15px; background: #f8f9fa; border: 1px solid #ddd; border-radius: 5px; width: 100%; text-align: center;">
+                        <p style="margin: 0 0 10px 0; font-weight: bold; font-size: 0.9em; color:#555;">⚡ Acciones Inmediatas:</p>
+                        <div style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: center;">
+                            <button class="btn-accion btn" data-tipo="TL" data-res="Acierto" style="background-color: #28a745; margin:0; font-size:0.9em;">✅ TL Pts</button>
+                            <button class="btn-accion btn" data-tipo="TL" data-res="Fallo" style="background-color: #dc3545; margin:0; font-size:0.9em;">❌ TL Falla</button>
+                            <div style="width:100%; height:1px; background:#ddd; margin: 10px 0;"></div>
+                            <button class="btn-accion btn" data-tipo="Rebote" data-res="Ofensivo" style="background-color: #f39c12; margin:0; font-size:0.9em;">Reb. Of</button>
+                            <button class="btn-accion btn" data-tipo="Rebote" data-res="Defensivo" style="background-color: #e67e22; margin:0; font-size:0.9em;">Reb. Def</button>
+                            <button class="btn-accion btn" data-tipo="Asistencia" data-res="Exitosa" style="background-color: #3498db; margin:0; font-size:0.9em;">Asistencia</button>
+                            <button class="btn-accion btn" data-tipo="Robo" data-res="Balon" style="background-color: #2ecc71; margin:0; font-size:0.9em;">Robo</button>
+                            <button class="btn-accion btn" data-tipo="Perdida" data-res="Balon" style="background-color: #e74c3c; margin:0; font-size:0.9em;">Pérdida</button>
+                            <button class="btn-accion btn" data-tipo="Falta" data-res="Personal" style="background-color: #9b59b6; margin:0; font-size:0.9em;">Falta</button>
+                        </div>
+                    </div>
+
+                    <div id="play-by-play-container">
+                        <h3 style="margin-top: 0; font-size: 1.1em; color: #333;">📜 Play-by-Play en Vivo</h3>
+                        <div id="lista-pbp" style="max-height: 200px; overflow-y: auto;">
+                            <p style="color: #888; font-size: 0.9em; text-align: center;">Esperando eventos...</p>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="columna-roster">
+                    <h3 id="titulo-equipo-visitante" class="titulo-equipo">Visitante</h3>
+                    <div class="zona-cancha"><p class="titulo-zona">🟢 En Cancha</p><div id="grid-visitante-cancha" class="grid-jugadores"></div></div>
+                    <div class="zona-banca"><p class="titulo-zona">🪑 Banca (Toca para cambio)</p><div id="grid-visitante-banca" class="grid-jugadores"></div></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="panel-dashboard" class="oculto">
+            <h2>3. Box Score Avanzado Master <span id="lbl-partido-id" style="font-size: 0.6em; color: #888;">(ID: --)</span></h2>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
+                <button id="btn-volver-cancha" class="btn" style="background-color: gray; margin: 0;">⬅ Volver Atrás</button>
+                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                    <div style="background: #f1f1f1; padding: 10px; border-radius: 5px; border: 1px solid #ddd;">
+                        <label for="filtro-periodo-dash" style="font-weight: bold;">⏱️ Periodo:</label>
+                        <select id="filtro-periodo-dash" style="padding: 5px; margin-left: 10px;">
+                            <option value="todos">Todo el partido</option>
+                            <option value="Q1">1er Cuarto</option>
+                            <option value="Q2">2do Cuarto</option>
+                            <option value="Q3">3er Cuarto</option>
+                            <option value="Q4">4to Cuarto</option>
+                            <option value="OT">Tiempo Extra</option>
+                        </select>
+                    </div>
+                    <div style="background: #f1f1f1; padding: 10px; border-radius: 5px; border: 1px solid #ddd;">
+                        <label for="filtro-equipo" style="font-weight: bold;">🛡️ Equipo:</label>
+                        <select id="filtro-equipo" style="padding: 5px; margin-left: 10px;"><option value="todos">Ambos Equipos</option></select>
+                    </div>
+                    <div style="background: #f1f1f1; padding: 10px; border-radius: 5px; border: 1px solid #ddd;">
+                        <label for="filtro-jugador" style="font-weight: bold;">🔍 Jugador:</label>
+                        <select id="filtro-jugador" style="padding: 5px; margin-left: 10px;"><option value="todos">Todos los jugadores</option></select>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="contenedor-tarjetas" class="tarjetas-ratio-container oculto">
+                <div class="tarjeta-ratio"><div class="tarjeta-titulo">eFG%</div><div class="tarjeta-sub">Effective Field Goal</div><div class="tarjeta-valor" id="global-efg">0.0%</div></div>
+                <div class="tarjeta-ratio"><div class="tarjeta-titulo">PPS</div><div class="tarjeta-sub">Points Per Shot</div><div class="tarjeta-valor" id="global-pps">0.00</div></div>
+                <div class="tarjeta-ratio"><div class="tarjeta-titulo">AST / TO</div><div class="tarjeta-sub">Assist to Turnover Ratio</div><div class="tarjeta-valor" id="global-ast-ratio">0.0</div></div>
+                <div class="tarjeta-ratio"><div class="tarjeta-titulo">REB Totales</div><div class="tarjeta-sub">Ofensivos + Defensivos</div><div class="tarjeta-valor" id="global-reb-ratio">0</div></div>
+            </div>
+
+            <div id="tabla-estadisticas-contenedor">
+                <table id="tabla-estadisticas">
+                    <thead>
+                        <tr>
+                            <th>Jugador</th><th class="col-pts">PTS</th><th style="background: #eef;">+/-</th>
+                            <th>TL (C-A)</th><th>% TL</th><th>2P (C-A)</th><th>% 2P</th><th>3P (C-A)</th><th>% 3P</th><th>% TC (Campo)</th>
+                            <th>REB</th><th>AST</th><th>ROB</th><th>PER</th><th>FLT</th><th>eFG%</th><th>PPS</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabla-estadisticas-cuerpo"></tbody>
+                </table>
+            </div>
+
+            <br><hr><br>
+            <h3>🗺️ Análisis Espacial de Tiros (FG Only)</h3>
+            <div style="display: flex; gap: 30px; align-items: start; flex-wrap: wrap; justify-content: center;">
+                <div style="width: 100%; max-width: 350px; flex: 1 1 300px;"><h4 style="margin-top:0; text-align: center; color: #555;">Shot Chart</h4><div id="contenedor-shotchart" class="cancha-basquet cancha-pequena" style="width: 100% !important;"></div></div>
+                <div style="width: 100%; max-width: 350px; flex: 1 1 300px;"><h4 style="margin-top:0; text-align: center; color: #555;">Mapa de Calor</h4><div id="contenedor-heatmap" class="cancha-basquet cancha-pequena" style="position: relative; width: 100% !important;"></div></div>
+                <div style="width: 100%; max-width: 350px; flex: 1 1 300px;"><h4 style="margin-top:0; text-align: center; color: #555;">Eficiencia por Zonas</h4><div id="contenedor-zonas" class="cancha-basquet cancha-pequena" style="position: relative; width: 100% !important;"></div></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="seccion-historial" class="oculto">
+        <h2>📜 Historial de Partidos</h2>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+            <p style="color: #555;">Aquí puedes consultar las estadísticas avanzadas de cualquier juego pasado.</p>
+            <button id="btn-actualizar-historial" class="btn" style="background-color: #007bff; margin: 0;">🔄 Actualizar Lista</button>
+        </div>
+        <div style="overflow-x: auto; background: white; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); padding: 15px; border: 1px solid #ddd;">
+            <table border="1" style="width: 100%; border-collapse: collapse; text-align: center; background-color: white;">
+                <thead style="background-color: #333; color: white;">
+                    <tr>
+                        <th style="padding: 12px;">ID Partido</th><th>Fecha</th><th>Torneo / Tipo</th><th>Cancha</th><th>Equipo Local</th><th>Equipo Visitante</th><th>Acción</th>
+                    </tr>
+                </thead>
+                <tbody id="tabla-historial">
+                    <tr><td colspan="7" style="padding: 15px;">Haz clic en "Actualizar Lista" para cargar los partidos.</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="seccion-temporada" class="oculto">
+        </div>
+
+    <div id="seccion-admin" class="oculto">
+       </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
