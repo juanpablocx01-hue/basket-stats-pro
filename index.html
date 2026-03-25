@@ -9,10 +9,10 @@
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            padding: 4px; /* Aún más optimizado */
+            padding: 2px; /* Aún más optimizado */
             max-width: 1400px; 
             margin: 0 auto;
-            font-size: 12px; /* Reducido ~15% (de 14px a 12px) */
+            font-size: 10px; /* Reducido ~15% (de 12px a 10px) */
         }
 
         /* Prevención de zoom por doble toque en elementos interactivos */
@@ -22,29 +22,29 @@
 
         .cancha-basquet {
             width: 100%;
-            max-width: 350px; /* Reducido ~15% adicional (de 410px a 350px) */
+            max-width: 300px; /* Reducido ~15% adicional (de 350px a 300px) */
             aspect-ratio: 50 / 47; 
             background-color: #e2c096; 
             border: 2px solid #333;
             position: relative;
             cursor: crosshair;
-            margin: 0 auto 4px auto; /* Margen hiper optimizado */
+            margin: 0 auto 2px auto; /* Margen hiper optimizado */
             background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 500 470'%3E%3C!-- Pintura --%3E%3Crect x='170' y='280' width='160' height='190' fill='%23d3a774' stroke='%23333' stroke-width='3'/%3E%3C!-- Circulo Libre --%3E%3Ccircle cx='250' cy='280' r='60' fill='none' stroke='%23333' stroke-width='3'/%3E%3C!-- Linea 3 Puntos --%3E%3Cpath d='M 45 470 L 45 290 A 215 215 0 0 1 455 290 L 455 470' fill='none' stroke='%23333' stroke-width='3'/%3E%3C!-- Area Restringida --%3E%3Cpath d='M 210 425 A 40 40 0 0 1 290 425' fill='none' stroke='%23333' stroke-width='3'/%3E%3C!-- Tablero --%3E%3Cline x1='215' y1='440' x2='285' y2='440' stroke='%23333' stroke-width='4'/%3E%3C!-- Aro --%3E%3Ccircle cx='250' cy='425' r='12' fill='none' stroke='%23f00' stroke-width='3'/%3E%3C!-- Angulos 45 --%3E%3Cline x1='250' y1='425' x2='95' y2='270' stroke='%23555' stroke-width='2' stroke-dasharray='6,4'/%3E%3Cline x1='250' y1='425' x2='405' y2='270' stroke='%23555' stroke-width='2' stroke-dasharray='6,4'/%3E%3C/svg%3E");
             background-size: cover;
             background-position: center;
         }
 
-        .marcador-tiro { position: absolute; width: 10px; height: 10px; background-color: red; border: 2px solid white; border-radius: 50%; transform: translate(-50%, -50%); box-shadow: 0 0 5px rgba(0,0,0,0.5); }
-        .btn { padding: 6px 12px; font-size: 12px; cursor: pointer; border: none; color: white; border-radius: 4px; margin-right: 4px;}
+        .marcador-tiro { position: absolute; width: 8px; height: 8px; background-color: red; border: 2px solid white; border-radius: 50%; transform: translate(-50%, -50%); box-shadow: 0 0 5px rgba(0,0,0,0.5); }
+        .btn { padding: 4px 10px; font-size: 10px; cursor: pointer; border: none; color: white; border-radius: 4px; margin-right: 4px;}
         .acierto { background-color: #28a745; }
         .fallo { background-color: #dc3545; }
         .oculto { display: none !important; }
 
         .cancha-pequena { max-width: 500px !important; width: 100% !important; height: auto !important; border: 1px solid #ccc !important; cursor: default; }
         #contenedor-shotchart, #contenedor-heatmap, #contenedor-zonas { overflow: hidden; position: relative; }
-        .marcador-shotchart { position: absolute; width: 10px; height: 10px; border-radius: 50%; transform: translate(-50%, -50%); box-shadow: 0 0 2px rgba(0,0,0,0.3); }
+        .marcador-shotchart { position: absolute; width: 8px; height: 8px; border-radius: 50%; transform: translate(-50%, -50%); box-shadow: 0 0 2px rgba(0,0,0,0.3); }
         .acierto-pequeno { background-color: #28a745; border: 1px solid #fff; }
-        .fallo-pequeno { background-color: transparent; border: none; color: #dc3545; font-weight: bold; font-size: 26px; line-height: 1; }
+        .fallo-pequeno { background-color: transparent; border: none; color: #dc3545; font-weight: bold; font-size: 20px; line-height: 1; }
         .fallo-pequeno::before { content: "×"; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); }
 
         /* ========================================================= */
@@ -52,17 +52,17 @@
         /* ========================================================= */
         .layout-comando { 
             display: flex; 
-            gap: 4px; /* Reducido */
+            gap: 2px; /* Reducido */
             align-items: stretch; 
             justify-content: space-between; 
-            margin-top: 4px; 
+            margin-top: 2px; 
             flex-wrap: nowrap; 
         }
         
         .columna-lateral { 
             flex: 1 1 25%; 
-            max-width: 200px; /* Reducido */
-            min-width: 90px; 
+            max-width: 170px; /* Reducido */
+            min-width: 75px; 
             display: flex;
             flex-direction: column;
         }
@@ -72,22 +72,22 @@
             display: flex; 
             flex-direction: column; 
             align-items: stretch; 
-            max-width: 480px; /* Reducido */
-            min-width: 240px; 
+            max-width: 410px; /* Reducido */
+            min-width: 200px; 
         }
 
         /* --- Estilos Roster Lateral --- */
-        .titulo-equipo-mini { margin: 0 0 3px 0; font-size: 0.85em; color: white; background: #333; text-align: center; padding: 3px; border-radius: 3px; text-transform: uppercase;}
-        .zona-cancha-mini { background-color: #eafaf1; border: 1px solid #28a745; padding: 3px; border-radius: 4px; margin-bottom: 4px; }
-        .zona-banca-mini { background-color: #f8f9fa; border: 1px solid #ccc; padding: 3px; border-radius: 4px; }
-        .titulo-zona-mini { font-size: 0.65em; color: #555; margin-bottom: 3px; text-align: center; font-weight: bold; text-transform: uppercase; }
+        .titulo-equipo-mini { margin: 0 0 2px 0; font-size: 0.8em; color: white; background: #333; text-align: center; padding: 2px; border-radius: 3px; text-transform: uppercase;}
+        .zona-cancha-mini { background-color: #eafaf1; border: 1px solid #28a745; padding: 2px; border-radius: 3px; margin-bottom: 3px; }
+        .zona-banca-mini { background-color: #f8f9fa; border: 1px solid #ccc; padding: 2px; border-radius: 3px; }
+        .titulo-zona-mini { font-size: 0.6em; color: #555; margin-bottom: 2px; text-align: center; font-weight: bold; text-transform: uppercase; }
         
-        .grid-jugadores { display: flex; flex-wrap: wrap; gap: 3px; }
+        .grid-jugadores { display: flex; flex-wrap: wrap; gap: 2px; }
         .btn-jugador { 
             flex: 1 1 100%; 
-            padding: 4px 2px; 
-            min-height: 32px; /* Reducido de 38px a 32px */
-            font-size: 0.7em; /* Reducido */
+            padding: 2px; 
+            min-height: 28px; /* Reducido de 32px a 28px */
+            font-size: 0.65em; /* Reducido */
             cursor: pointer; 
             background-color: white; 
             border: 1px solid #aaa; 
@@ -114,37 +114,37 @@
             justify-content: space-between;
             align-items: center;
             background: #222;
-            padding: 4px 8px; /* Reducido */
+            padding: 2px 6px; /* Reducido */
             border-radius: 4px;
-            margin-bottom: 4px;
+            margin-bottom: 2px;
             border: 2px solid #444;
         }
-        .caja-equipo { display: flex; flex-direction: column; align-items: center; width: 50px; }
-        .nombre-score-mini { font-size: 0.7em; color: #aaa; font-weight: bold; margin-bottom: 2px; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;}
-        .score-numero-mini { font-family: 'Courier New', monospace; font-size: 1.8em; color: #ff9800; font-weight: bold; line-height: 1; } /* Reducido de 2.2em */
+        .caja-equipo { display: flex; flex-direction: column; align-items: center; width: 45px; }
+        .nombre-score-mini { font-size: 0.65em; color: #aaa; font-weight: bold; margin-bottom: 2px; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;}
+        .score-numero-mini { font-family: 'Courier New', monospace; font-size: 1.5em; color: #ff9800; font-weight: bold; line-height: 1; } /* Reducido de 1.8em a 1.5em */
         
         .caja-reloj-mini { display: flex; flex-direction: column; align-items: center; flex: 1; }
-        .select-periodo-mini { font-size: 0.7em; padding: 2px 4px; background: #111; color: white; border: 1px solid #555; border-radius: 3px; outline: none; }
-        .reloj-digital-mini { font-family: 'Courier New', monospace; font-size: 1.7em; color: #0f0; line-height: 1; margin: 3px 0; letter-spacing: 1px;} /* Reducido de 2em */
+        .select-periodo-mini { font-size: 0.65em; padding: 2px; background: #111; color: white; border: 1px solid #555; border-radius: 3px; outline: none; }
+        .reloj-digital-mini { font-family: 'Courier New', monospace; font-size: 1.5em; color: #0f0; line-height: 1; margin: 2px 0; letter-spacing: 1px;} /* Reducido de 1.7em a 1.5em */
         .reloj-pausado { color: #dc3545; }
-        .btn-play-mini { background: #28a745; color: white; border: none; padding: 4px 12px; font-weight: bold; border-radius: 4px; font-size: 0.75em; cursor: pointer; text-transform: uppercase;}
+        .btn-play-mini { background: #28a745; color: white; border: none; padding: 2px 8px; font-weight: bold; border-radius: 3px; font-size: 0.65em; cursor: pointer; text-transform: uppercase;}
 
         /* --- Acciones Inmediatas (Grid 4x2) --- */
         .grid-acciones-rapidas {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 3px; /* Reducido */
+            gap: 2px; /* Reducido */
             width: 100%;
             background: #f8f9fa;
-            padding: 4px; /* Reducido */
+            padding: 2px; /* Reducido */
             border: 1px solid #ddd;
             border-radius: 4px;
         }
         .grid-acciones-rapidas .btn-accion {
             margin: 0;
-            padding: 2px 2px;
-            font-size: 0.75em; /* Reducido */
-            min-height: 34px; /* Reducido de 42px a 34px */
+            padding: 2px;
+            font-size: 0.7em; /* Reducido */
+            min-height: 28px; /* Reducido de 34px a 28px */
             white-space: normal;
             line-height: 1.1;
             display: flex;
@@ -152,17 +152,17 @@
             justify-content: center;
             border-radius: 3px;
             font-weight: bold;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
         }
 
         /* --- Menú Flotante Tiro --- */
-        .menu-flotante { position: absolute; background: white; border: 2px solid #333; border-radius: 8px; padding: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.4); z-index: 100; width: 150px; text-align: center; }
-        .menu-flotante select { width: 100%; padding: 4px; margin-bottom: 8px; font-size: 0.85em; }
+        .menu-flotante { position: absolute; background: white; border: 2px solid #333; border-radius: 6px; padding: 6px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); z-index: 100; width: 130px; text-align: center; }
+        .menu-flotante select { width: 100%; padding: 2px; margin-bottom: 6px; font-size: 0.8em; }
         .botones-flotantes { display: flex; gap: 4px; }
-        .botones-flotantes button { flex: 1; padding: 8px 0; font-size: 1em; font-weight: bold; border-radius: 4px; margin: 0;}
-        .btn-asist { display: block; width: 100%; margin-bottom: 4px; padding: 6px; background: #f1f1f1; border: 1px solid #ccc; border-radius: 4px; cursor: pointer; font-size: 0.8em; min-height: 32px;}
+        .botones-flotantes button { flex: 1; padding: 6px 0; font-size: 0.9em; font-weight: bold; border-radius: 4px; margin: 0;}
+        .btn-asist { display: block; width: 100%; margin-bottom: 4px; padding: 4px; background: #f1f1f1; border: 1px solid #ccc; border-radius: 3px; cursor: pointer; font-size: 0.75em; min-height: 28px;}
         .btn-asist:hover { background: #e2e2e2; }
-        .btn-sin-asist { background: #ffcccc; border-color: #ff9999; font-weight: bold; color: #a00; margin-top: 6px; }
+        .btn-sin-asist { background: #ffcccc; border-color: #ff9999; font-weight: bold; color: #a00; margin-top: 4px; }
         .btn-sin-asist:hover { background: #ffb3b3; }
 
         /* AJUSTES PARA MÓVILES MUY PEQUEÑOS (Smartphones vertical) */
@@ -1083,8 +1083,9 @@
             const btnAnotador = document.querySelector(`.btn-jugador[data-id="${idAnotador}"]`);
             if(!btnAnotador) { finalizarFlujoCaptura(`Tiro guardado ✔️`); return; }
 
-            const contenedorEquipo = btnAnotador.closest('.columna-lateral');
-            const companeros = contenedorEquipo.querySelectorAll(`.btn-jugador:not([data-id="${idAnotador}"])`);
+            const contenedorCancha = btnAnotador.closest('.zona-cancha-mini');
+            if(!contenedorCancha) { finalizarFlujoCaptura(`Tiro guardado ✔️`); return; }
+            const companeros = contenedorCancha.querySelectorAll(`.btn-jugador:not([data-id="${idAnotador}"])`);
             
             companeros.forEach(comp => {
                 const btnAst = document.createElement('button');
