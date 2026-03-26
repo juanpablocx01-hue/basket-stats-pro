@@ -222,7 +222,10 @@
 <body>
     <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #ddd; padding-bottom: 5px; margin-bottom: 10px;">
         <h1 style="margin: 0; font-size: 1.2em;">Estadísticas de Básquetbol</h1>
-        <p style="margin: 0; font-size: 0.85em;">Estado: <span id="estado-conexion">Conectando...</span></p>
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <p style="margin: 0; font-size: 0.85em;">Estado: <span id="estado-conexion">Conectando...</span></p>
+            <button id="btn-fullscreen" class="btn" style="background-color: #6c757d; padding: 4px 8px; font-size: 0.8em; margin: 0; border-radius: 4px;">🔲 Pantalla Completa</button>
+        </div>
     </div>
     
     <div style="margin-bottom: 10px; display: flex; gap: 8px; flex-wrap: wrap;">
@@ -556,16 +559,17 @@
             configurarBotonIniciar();
             configurarReloj(); 
             configurarCancha();
-            configurarBotonesTiroFlotante(); 
-            configurarAccionesRapidas(); 
-            configurarDashboard();
-            configurarAdmin(); 
-            configurarHistorial();
-            
-            cargarJugadoresGlobales(); 
-        }
+        configurarBotonesTiroFlotante(); 
+        configurarAccionesRapidas(); 
+        configurarDashboard();
+        configurarAdmin(); 
+        configurarHistorial();
+        configurarFullscreen();
+        
+        cargarJugadoresGlobales(); 
+    }
 
-        function configurarNavegacion() {
+    function configurarNavegacion() {
             const btnPartido = document.getElementById('nav-partido');
             const btnHistorial = document.getElementById('nav-historial'); 
             const btnTemporada = document.getElementById('nav-temporada');
@@ -1616,6 +1620,35 @@
             }
             ultimoToque = ahora;
         }, { passive: false });
+
+        // 4. Configurar Modo Pantalla Completa
+        function configurarFullscreen() {
+            const btnFs = document.getElementById('btn-fullscreen');
+            if (!btnFs) return;
+            
+            btnFs.addEventListener('click', () => {
+                if (!document.fullscreenElement) {
+                    document.documentElement.requestFullscreen().catch(err => {
+                        console.warn(`No se pudo iniciar pantalla completa: ${err.message}`);
+                    });
+                    btnFs.textContent = '🗗 Salir Pantalla Completa';
+                } else {
+                    if (document.exitFullscreen) {
+                        document.exitFullscreen();
+                        btnFs.textContent = '🔲 Pantalla Completa';
+                    }
+                }
+            });
+
+            // Sincronizar el texto del botón si se sale usando gestos del sistema
+            document.addEventListener('fullscreenchange', () => {
+                if (!document.fullscreenElement) {
+                    btnFs.textContent = '🔲 Pantalla Completa';
+                } else {
+                    btnFs.textContent = '🗗 Salir Pantalla Completa';
+                }
+            });
+        }
 
         iniciarApp();
     </script>
